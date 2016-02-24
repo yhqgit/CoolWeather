@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import com.project.yhq.coolweather.model.City;
 import com.project.yhq.coolweather.model.Province;
@@ -54,7 +55,6 @@ public class CoolWeatherDB
         {
             ContentValues values = new ContentValues();
             values.put("province_name", province.getProvinceName());
-            values.put("province_id", province.getId());
             db.insert("Province", null, values);
         }
     }
@@ -62,7 +62,7 @@ public class CoolWeatherDB
     /**
      * 数据库读取全国所有的省份信息
      */
-    public List<Province> loadProvince()
+    public List<Province> loadProvinces()
     {
         List<Province> list = new ArrayList<Province>();
         Cursor cursor = db.query("Province", null, null, null, null, null, null);
@@ -89,7 +89,6 @@ public class CoolWeatherDB
     public void saveCity(City city)
     {
         ContentValues values = new ContentValues();
-        values.put("id", city.getId());
         values.put("city_name", city.getCityName());
         values.put("city_code", city.getCityCode());
         values.put("province_id", city.getProvinceId());
@@ -99,10 +98,10 @@ public class CoolWeatherDB
     /**
      * 数据库读取全国所有的城市信息
      */
-    public List<City> loadCity()
+    public List<City> loadCities(int provinceId)
     {
         List<City> list = new ArrayList<City>();
-        Cursor cursor = db.query("City", null, null, null, null, null, null);
+        Cursor cursor = db.query("City", null, "province_id = ?", new String[]{String.valueOf(provinceId)}, null, null, null);
         if(cursor.moveToFirst())
         {
             do
