@@ -9,11 +9,11 @@ import android.database.sqlite.SQLiteOpenHelper;
  */
 public class CoolWeatherOpenHelper extends SQLiteOpenHelper
 {
-    public static final String CREATE_PROVINCE = "create table Province (" +
+    public static final String CREATE_PROVINCE = "create table province (" +
             "id integer primary key autoincrement ," +
             "province_name text )" ;
 
-    public static final String CREATE_CITY = "create table City (" +
+    public static final String CREATE_CITY = "create table city (" +
             "id integer primary key autoincrement ," +
             "city_name text ," +
             "city_code text ," +

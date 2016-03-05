@@ -55,7 +55,7 @@ public class CoolWeatherDB
         {
             ContentValues values = new ContentValues();
             values.put("province_name", province.getProvinceName());
-            db.insert("Province", null, values);
+            db.insert("province", null, values);
         }
     }
 
@@ -65,7 +65,7 @@ public class CoolWeatherDB
     public List<Province> loadProvinces()
     {
         List<Province> list = new ArrayList<Province>();
-        Cursor cursor = db.query("Province", null, null, null, null, null, null);
+        Cursor cursor = db.query("province", null, null, null, null, null, null);
         if (cursor.moveToFirst())  //光标到第一行
         {
             do
@@ -92,7 +92,7 @@ public class CoolWeatherDB
         values.put("city_name", city.getCityName());
         values.put("city_code", city.getCityCode());
         values.put("province_id", city.getProvinceId());
-        db.insert("City", null, values);
+        db.insert("city", null, values);
     }
 
     /**
@@ -101,7 +101,7 @@ public class CoolWeatherDB
     public List<City> loadCities(int provinceId)
     {
         List<City> list = new ArrayList<City>();
-        Cursor cursor = db.query("City", null, "province_id = ?", new String[]{String.valueOf(provinceId)}, null, null, null);
+        Cursor cursor = db.query("city", null, "province_id = ?", new String[]{String.valueOf(provinceId)}, null, null, null);
         if(cursor.moveToFirst())
         {
             do

@@ -2,7 +2,10 @@ package com.project.yhq.coolweather.activity;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -29,7 +32,6 @@ import java.util.List;
  */
 public class ChooseAreaActivity extends Activity
 {
-    public static final String MY_ID = "47474fd60deb41278daec41ec3d207a6";
     public static final int LEVEL_PROVINCE = 0;
     public static final int LEVEL_CITY = 1;
 
@@ -50,9 +52,20 @@ public class ChooseAreaActivity extends Activity
     //当前选中的级别
     private int currentLevel;
 
+    private boolean isFromWeatherActivity;
+
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        isFromWeatherActivity = getIntent().getBooleanExtra("from_weather_activity", false);
+        if (prefs.getBoolean("city_selected", false) && !isFromWeatherActivity)
+        {
+            Intent intent = new Intent(this, WeatherActivity.class);
+            startActivity(intent);
+            finish();
+            return ;
+        }
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.choose_area);
 
@@ -74,14 +87,23 @@ public class ChooseAreaActivity extends Activity
                 else if(currentLevel == LEVEL_CITY)
                 {
                     selectedCity = cityList.get(position);
+                    String city_id = selectedCity.getCityCode();
+                    Intent intent = new Intent(ChooseAreaActivity.this, WeatherActivity.class);
+                    intent.putExtra("city_id", city_id);
+                    startActivity(intent);
+                    finish();
                 }
             }
         });
         queryProvinces();
     }
 
+    /**
+     * 展示省份列表
+     */
     private void queryProvinces()
     {
+        //如果本地数据库有数据，则直接读取，否则先从网络获取数据再从数据库中读取
         provinceList = coolWeatherDB.loadProvinces();
         if(provinceList.size()>0)
         {
@@ -93,6 +115,7 @@ public class ChooseAreaActivity extends Activity
             adapter.notifyDataSetChanged();
             listView.setSelection(0);
             titleText.setText("中国");
+            //读取完数据设置当前ListView展示的内容为province
             currentLevel = LEVEL_PROVINCE;
         }
         else
@@ -128,7 +151,7 @@ public class ChooseAreaActivity extends Activity
     private void queryCitiesFromServer()
     {
         String address;
-        address = "https://api.heweather.com/x3/citylist?search=allchina&key=" + MY_ID;
+        address = "https://api.heweather.com/x3/citylist?search=allchina&key=" + Utility.MY_ID;
         showProgressDialog();
         HttpUtil.sendHttpRequest(address, new HttpCallbackListener()
         {
@@ -203,7 +226,15 @@ public class ChooseAreaActivity extends Activity
     {
         if (currentLevel == LEVEL_CITY)
             queryProvinces();
-        else finish();
+        else
+        {
+            if (isFromWeatherActivity)
+            {
+                Intent intent = new Intent(this, WeatherActivity.class);
+                startActivity(intent);
+            }
+            finish();
+        }
     }
 
 }

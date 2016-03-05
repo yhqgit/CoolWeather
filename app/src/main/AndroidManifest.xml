@@ -6,19 +6,34 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/logo"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-    <activity
-        android:name=".activity.ChooseAreaActivity"
-        android:label="@string/app_name">
-        <intent-filter>
-            <action android:name="android.intent.action.MAIN"/>
-            <category android:name="android.intent.category.LAUNCHER" />
-        </intent-filter>
-    </activity>
+        <activity
+            android:name=".activity.ChooseAreaActivity"
+            android:label="@string/app_name">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity android:name=".activity.WeatherActivity">
+
+        </activity>
+
+        <service android:name=".service.AutoUpdateService"></service>
+
+        <receiver android:name=".receiver.AutoUpdateReceiver"></receiver>
+
+        <provider
+            android:authorities="com.project.yhq.coolweather.provider"
+            android:name=".provider.DatabaseProvider"
+            android:exported="true">
+
+        </provider>
 
     </application>
 
